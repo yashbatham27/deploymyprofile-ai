@@ -6,6 +6,10 @@
       "destination": "/api/index.js"
     },
     {
+      "source": "/github-callback.html",
+      "destination": "/github-callback.html"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
