@@ -409,7 +409,7 @@ router.get("/auth/github/url", (req, res) => {
   try {
     console.log("GitHub Auth Request Received");
     console.log("CLIENT_ID Status:", !!CLIENT_ID); // Should be true
-
+    console.log("Generating URL with origin:", FRONTEND_ORIGIN);
     const redirectUri = `${FRONTEND_ORIGIN}/github-callback.html`;
     const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo,workflow&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
