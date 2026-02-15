@@ -56,11 +56,11 @@ async function verifyRef(octokit, owner, repo, ref, retries = 7) {
 
 // --- GITHUB OAUTH ---
 
-router.get("/auth/github/url", (req, res) => {
-  const redirectUri = `${FRONTEND_ORIGIN}/github-callback.html`;
-  const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo,workflow&redirect_uri=${encodeURIComponent(redirectUri)}`;
-  res.json({ url });
-});
+// router.get("/auth/github/url", (req, res) => {
+//   const redirectUri = `${FRONTEND_ORIGIN}/github-callback.html`;
+//   const url = `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=repo,workflow&redirect_uri=${encodeURIComponent(redirectUri)}`;
+//   res.json({ url });
+// });
 
 router.post("/auth/github/exchange", async (req, res) => {
   const { code } = req.body;
@@ -419,12 +419,12 @@ router.get("/auth/github/url", (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
+app.use("/api", router);
 if (process.env.NODE_ENV !== "production") {
   const PORT = process.env.PORT || 4000;
   app.listen(PORT, () => {
     console.log(`Backend listening on http://localhost:${PORT}`);
   });
 }
-app.use("/api", router);
+
 module.exports = app;
