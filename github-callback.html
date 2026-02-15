@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Authenticating...</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f9f9f9; }
+        .container { text-align: center; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #3498db; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div id="status" class="container">
+        <div class="loader"></div>
+        <p>Completing GitHub authentication...</p>
+    </div>
+
+    <script>
+        (async () => {
+            const statusDiv = document.getElementById('status');
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            
+            const BACKEND_ENDPOINT = '/api/auth/github/exchange'; 
+            const FRONTEND_ORIGIN = window.location.origin;
+
+            if (!code) {
+                statusDiv.innerHTML = '<p class="error">Error: No code received from GitHub.</p>';
+                return;
+            }
+
+            try {
+                // We use a relative path so it works everywhere
+                const resp = await fetch(BACKEND_ENDPOINT, {
+                    method: 'POST',
+                    credentials: 'include', 
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ code })
+                });
+
+                if (!resp.ok) {
+                    const errorData = await resp.json();
+                    throw new Error(errorData.error || 'Failed to exchange code');
+                }
+
+                const data = await resp.json();
+
+                // 2. Notify the parent window
+                if (window.opener) {
+                    window.opener.postMessage(
+                        { type: 'github_auth_success', username: data.username },
+                        FRONTEND_ORIGIN 
+                    );
+                    
+                    statusDiv.innerHTML = '<b>Authenticated successfully!</b><br>Closing window...';
+                    setTimeout(() => window.close(), 1500);
+                } else {
+                    statusDiv.innerText = 'Authenticated! You can now return to the main tab.';
+                }
+
+            } catch (e) {
+                console.error('Auth Error:', e);
+                statusDiv.innerHTML = `<p class="error">Authentication failed: ${e.message}</p>`;
+                
+                if (window.opener) {
+                    window.opener.postMessage({ type: 'github_auth_error', error: e.message }, FRONTEND_ORIGIN);
+                }
+            }
+        })();
+    </script>
+</body>
+</html>
