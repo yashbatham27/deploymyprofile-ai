@@ -8,10 +8,15 @@ const { Octokit } = require("@octokit/rest");
 const app = express();
 const router = express.Router();
 
-const FRONTEND_ORIGIN =
-  process.env.NODE_ENV === "production"
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+// This logic handles both local development and Vercel production reliably
+let origin = process.env.FRONTEND_ORIGIN || process.env.VERCEL_URL || "http://localhost:3000";
+
+// Only prepend https:// if it's missing and we are in production
+if (process.env.NODE_ENV === "production" && !origin.startsWith('http')) {
+    origin = `https://${origin}`;
+}
+
+const FRONTEND_ORIGIN = origin;
 app.use(cors({ origin: FRONTEND_ORIGIN, credentials: true }));
 app.use(express.json({ limit: "15mb" }));
 app.use(cookieParser());
