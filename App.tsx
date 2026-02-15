@@ -105,8 +105,8 @@ function App() {
   }, [resumeData, theme, themeColors]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#fafafa] text-slate-900 overflow-x-hidden selection:bg-indigo-100 selection:text-indigo-900">
-      <nav className="sticky top-0 z-100 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 h-16 flex items-center justify-between shadow-sm">
+    <div className="min-h-screen flex flex-col bg-[#fafafa] text-slate-900 selection:bg-indigo-100 selection:text-indigo-900">
+      <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 h-16 flex items-center justify-between shadow-sm">
         {/* Logo Section - Scaled for mobile */}
         <span className="font-bold text-base md:text-2xl tracking-tighter whitespace-nowrap">
           <span className="bg-gradient-to-r from-cyan-400 via-purple-600 to-cyan-400 bg-[length:200%_200%] bg-clip-text text-transparent animate-gradient">
@@ -202,7 +202,7 @@ function App() {
       </nav>
 
       {resumeData && (
-        <div className="sticky top-16 z-90 w-full bg-white border-b border-slate-100 py-3 px-4 md:px-8 overflow-x-auto no-scrollbar">
+        <div className="sticky top-16 z-40 w-full bg-white border-b border-slate-100 py-3 px-4 md:px-8 overflow-x-auto no-scrollbar">
           <div className="max-w-7xl mx-auto flex items-center gap-3">
             <div className="flex items-center gap-2 text-[10px] font-black text-slate-300 uppercase tracking-[0.2em] mr-4 shrink-0">
               <Palette size={14} /> Style Engine
